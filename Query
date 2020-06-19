@@ -137,3 +137,9 @@ WHERE hire_date IN
 SELECT Employee.name, Project.pname
 FROM Employee  INNER JOIN Works ON
 Employee.empID = Works.EmpID  INNER JOIN Project ON Project.pno = Works.pno  AND Project.pname IN ('AI','PHP');
+
+------------------------------------------------------------------------------------------
+16)Find the emp working on projecr 'JAVA'  AND store them in a new table called CRM
+-->
+insert into CRM(empID,name,salary)(select e.empID,e.name,e.salary
+ from Employee e,Works w,Project p where e.empID=w.empID and w.pno = p.pno and p.pname='JAVA')
