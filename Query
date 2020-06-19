@@ -1,0 +1,139 @@
+
+SQL QUERY
+----------------------------------------------------------------------------------------------------------------
+CREATE TABLE 
+	create table Project (pno int primary key, pname varchar(50))
+
+INSERT QUERY
+	insert into Project values (1,'JAVA'),(2,'PHP'),(3,'DOTNET'),(4,'PYTHON'),(5,'C'),(6,'JAVA'),(7,'PHP'),(8,'AI'),(9,'JAVA'),(10,'C#');
+
+DROP QULUMN
+	alter table Employee
+	DROP COLUMN empID
+
+ADD COLUMN PK 
+	alter table Employee 
+	add empID INT PRIMARY KEY  IDENTITY;
+----------------------------------------------------------------------------------------------------------------
+1)CONCAT THE COLUMN
+-->
+SELECT CONCAT(',',countryMasterID, ',' ,countryName) AS COUNTRY FROM CountryMaster
+-->
+select ',(' || CustomerID || ',' || '"' || CustomerName || '"' || ',' || '"' || ContactName || '"' || ',' || '"' || Address || '"' || ',' || '"' || City || '"' || ',' || '"' || PostalCode || '"' || ',' || '"' || Country || '"' || ')' from Customers
+
+----------------------------------------------------------------------------------------
+2)GROUP BY
+-->
+SELECT SNAME,COUNT(SID)AS COUNT FROM STUDENT GROUP BY SNAME
+-->
+SELECT SNAME,COUNT(SID) AS COUNT ,SCITY FROM STUDENT GROUP BY SNAME,SCITY
+
+---------------------------------------------------------------------------------------
+3)JOIN 3 TABLE ND COMMITTION>12 ND ORDER DATE BETWEEN 1996 TO 1997 
+-->
+SELECT cname,commition,amount,odate FROM Customer INNER JOIN Salesman  ON Customer.snum=Salesman.snum INNER JOIN Order1 ON Salesman.snum= Order1.snum WHERE commition>12 AND odate BETWEEN '1996-05-12' AND '1997-03-10';
+-->
+SELECT DISTINC cname,commition,amount,odate FROM Customer ,Salesman ,Order1 Where commition>12 AND BETWEEN '1996-05-12' AND '1997-03-10';
+
+---------------------------------------------------------------------------------------
+4)JOIN 2 TABLE 
+-->
+SELECT ID, NAME, AGE, AMOUNT
+FROM CUSTOMERS, ORDERS
+WHERE CUSTOMERS.ID = ORDERS.CUSTOMER_ID
+-->
+SELECT A.ID, A.NAME, A.AGE, B.AMOUNT
+FROM CUSTOMERS A inner join ORDERS B on A.ID=B.Customer_ID
+
+----------------------------------------------------------------------------------------
+5)ADD COLUMN (rfiTemplateTermsAndConditionID) AS PRIMARY KEY IN EXTING TABLE
+--> 
+ALTER TABLE RFITemplateTermsAndCondition ADD rfiTemplateTermsAndConditionID BIGINT PRIMARY KEY IDENTITY;
+
+----------------------------------------------------------------------------------------
+6)Write an SQL query to fetch the count of employees working in project ‘P1’.
+-->
+SELECT COUNT(*) 
+FROM EmployeeSalary 
+WHERE Project = 'P1';
+
+---------------------------------------------------------------------------------------
+7)Write an SQL query to fetch duplicate records from a EmployeeDetails (leaving the primary key – EmpId).
+-->
+SELECT FullName, ManagerId, DateOfJoining, City, COUNT(*)
+FROM EmployeeDetails
+GROUP BY FullName, ManagerId, DateOfJoining, City
+HAVING COUNT(*) > 1;
+
+-----------------------------------------------------------------------------------------------
+8)delete duplicate record
+-->
+;with cte
+as
+(
+select *,ROW_NUMBER() over (partition by cnum,cname order by cnum ) as rownumber from Customer
+)
+delete from cte where rownumber>1
+-->
+delete  from customer 
+where cnum NOT IN(SELECT min(cnum) from customer group by cnum,cname)
+
+---------------------------------------------------SALARY------------------------------------------
+8)WRITE A SQL QUERY TO DISPLAY EMP NAME  WHO IS TAKING MAX SALARY
+--->
+SELECT E_NAME FROM EMP WHERE EMP=(SELECT MAX(SALARY) FROM EMP);
+
+--------------------------------------------------------------------------------------------------
+9)FIND THE SECOND HIGHEST SAL
+--->(<> = DOESNOT EQAL TO,NOT IN,<)
+SELECT MAX(SAL) FROM EMP WHERE SAL <>SELECT MAX(SAL) FROM EMP
+
+--------------------------------------------------------------------------------------------------
+10) N SALARY
+---->
+SELECT TOP 1 SALARY FROM
+(SELECT DISTICNT TOP 3 SALARY FROM EMP 
+  ORDER BY SALARY DES) RESLUT
+ORDER BY SALARY
+
+--------------------------------------------------------------------------------------------------
+11)USING DENCE_RANK FUNCTION
+-->
+with cte 
+as
+(
+select SALARY,DENCE_RANK () over (order by SALARY DESC ) as DENCERANK from EMP
+)
+SELECT TOP 1 SAL
+FROM cte WHERE cte.DENCERANK  =3
+
+------------------------------------------------------------------------------------
+12)FIND EMP HERIED IN LAST N  MONTH
+-->
+select *,DATEDIFF(MONTH,hiredate,GATEDATE()) AS DIFF
+FROM EMP
+WHERE diff between 1 and 3
+===>>(DATEDIFF is find differce to current date(GATEDATE), hiredate is column in table )
+
+
+13)FIND EMP HERIED IN LAST 1 to 30 days.
+-->
+select *,DATEDIFF(DAY,hiredate,GATEDATE()) AS DIFF
+FROM EMP
+WHERE DATEDIFF(DAY,hiredate,GATEDATE()) between 1 and 30
+
+14)list the employees who joined in the company on the same date
+-->
+SELECT *
+FROM employees e
+WHERE hire_date IN
+    (SELECT hire_date
+     FROM employees
+     WHERE e.emp_id <> emp_id);
+
+-----------------------------------------------------------------------------------------
+ 15)Emp working on both AI ND PHP 
+ -->
+SELECT Employee.name, Project.pname
+FROM Employee  INNER JOIN Works ON
+Employee.empID = Works.EmpID  INNER JOIN Project ON Project.pno = Works.pno  AND Project.pname IN ('AI','PHP');
